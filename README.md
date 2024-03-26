@@ -1,0 +1,2 @@
+# FactByte-facts-app
+A web application that expands your knowledge of important issues and allows you to share it with others. In less than a minute a day, this app empowers you with facts to help you make truly informed decisions.

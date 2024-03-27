@@ -12,10 +12,10 @@
     <div class="container">
         <header>
             <img src="logo.png" alt="FactByte-logo" width="250" />
-            <button class="btn">Share a fact</button>
+            <button class="btn share-fact-btn">Share a fact</button>
         </header>
         <!-- <h1>FactByte</h1> -->
-        <form action="">
+        <form class="hidden">
             <input type="text" placeholder="Share a fact here" />
             <input type="text" placeholder="Share your Trustworthy Source here" />
             <select name="" id="">
@@ -37,7 +37,7 @@
                 </ul>
             </aside>
             <section>
-                <ul>
+                <ul class="facts-list">
                     <li class="fact">
                         <p>React is being developed by Meta (formerly facebook)
                             <a class="source" href="https://opensource.fb.com/" target="_blank">(Source)</a>
@@ -72,6 +72,7 @@
             </section>
         </main>
     </div>
+    <script src="script.js"></script>
 </body>
 
 </html>

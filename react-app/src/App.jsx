@@ -6,12 +6,15 @@ import './style.css'
 
 function App() {
   const [showForm, setShowForm] = useState(false);
+  // const [factText, setFactText] = useState("");
+  // const [factSource, setFactSource] = useState("");
 
   return (
     <>
       <Header showForm={showForm} setShowForm={setShowForm} />
       {showForm ?
         <NewFactForm /> : null}
+      {/* <NewFactForm factText={factText} factSource={factSource} /> : null} */}
       <main>
         <CategoryFilter />
         <Factslist />
@@ -34,16 +37,60 @@ function Header({ showForm, setShowForm }) {
   )
 }
 
+function isValidHttpUrl(string) {
+  let url;
+
+  try {
+    url = new URL(string);
+  } catch (_) {
+    return false;
+  }
+
+  return url.protocol === "http:" || url.protocol === "https:";
+}
+
+// function NewFactForm({ factText, factSource }) {
 function NewFactForm() {
+  const [factText, setFactText] = useState("");
+  const [factSource, setFactSource] = useState("");
+  const [category, setCategory] = useState("")
+  const textLength = factText.length;
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    // console.log(factText, factSource, category);
+    // if (!factText || !factSource || !category) {
+    //   alert("Please add fact details before posting!")
+    //   return;
+    // }
+    if (factText && isValidHttpUrl(factSource) && category && textLength <= 200) {
+      const newFactObj = {
+        text: factText,
+        source: factSource,
+        category,
+        up_votes: 0,
+        down_votes: 0,
+        mindblowing_votes: 0
+      }
+      console.log(newFactObj);
+
+    } else {
+      alert("Please add valid data before posting!")
+    }
+  }
+
   return (
-    <form className="">
-      <input type="text" placeholder="Share a fact here" />
-      <input type="text" placeholder="Share your Trustworthy Source here" />
-      <select name="" id="">
+    <form className="" onSubmit={handleSubmit}>
+      {/* <div> */}
+      <input type="text" placeholder="Share a fact here" value={factText}
+        onChange={(e) => setFactText(e.target.value)} />
+      <span>{200 - textLength}</span>
+      {/* </div> */}
+      <input type="text" placeholder="Share your Trustworthy Source here" value={factSource}
+        onChange={(e) => setFactSource(e.target.value)} />
+      <select name="category" value={category} onChange={(e) => setCategory(e.target.value)}>
         <option value="">Choose Category:</option>
-        <option value="technology">Technology</option>
-        <option value="science">Science</option>
-        <option value="finance">Finance</option>
+        {CATEGORIES.map((cat) => <option key={cat.name} value={cat.name}>{cat.name.toUpperCase()}</option>)}
       </select>
       <button className="btn font-bold" type="submit">Post</button>
     </form>

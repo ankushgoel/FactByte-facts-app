@@ -6,18 +6,16 @@ import './style.css'
 
 function App() {
   const [showForm, setShowForm] = useState(false);
-  // const [factText, setFactText] = useState("");
-  // const [factSource, setFactSource] = useState("");
+  const [facts, setFacts] = useState(initialFacts);
 
   return (
     <>
       <Header showForm={showForm} setShowForm={setShowForm} />
       {showForm ?
-        <NewFactForm /> : null}
-      {/* <NewFactForm factText={factText} factSource={factSource} /> : null} */}
+        <NewFactForm setFacts={setFacts} setShowForm={setShowForm} /> : null}
       <main>
         <CategoryFilter />
-        <Factslist />
+        <Factslist facts={facts} />
       </main>
     </>
   )
@@ -49,8 +47,7 @@ function isValidHttpUrl(string) {
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
-// function NewFactForm({ factText, factSource }) {
-function NewFactForm() {
+function NewFactForm({ setFacts, setShowForm }) {
   const [factText, setFactText] = useState("");
   const [factSource, setFactSource] = useState("");
   const [category, setCategory] = useState("")
@@ -58,11 +55,6 @@ function NewFactForm() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    // console.log(factText, factSource, category);
-    // if (!factText || !factSource || !category) {
-    //   alert("Please add fact details before posting!")
-    //   return;
-    // }
     if (factText && isValidHttpUrl(factSource) && category && textLength <= 200) {
       const newFactObj = {
         text: factText,
@@ -73,6 +65,14 @@ function NewFactForm() {
         mindblowing_votes: 0
       }
       console.log(newFactObj);
+
+      //ToDo - Add fact to DB
+      setFacts((facts) => [newFactObj, ...facts]);
+
+      setFactText("");
+      setFactSource("");
+      setCategory("")
+      setShowForm(false);
 
     } else {
       alert("Please add valid data before posting!")
@@ -112,8 +112,8 @@ function CategoryFilter() {
   )
 }
 
-function Factslist() {
-  const facts = initialFacts;
+function Factslist({ facts }) {
+  // const facts = initialFacts;
   return (
     <section>
       <ul className="facts-list">

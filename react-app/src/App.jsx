@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import supabase from './supabase'
+
 import logo from '/logo.png'
 import { initialFacts, CATEGORIES } from './data'
 import './App.css'
@@ -6,7 +8,28 @@ import './style.css'
 
 function App() {
   const [showForm, setShowForm] = useState(false);
-  const [facts, setFacts] = useState(initialFacts);
+  const [facts, setFacts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    getFacts()
+  }, [])
+
+  async function getFacts() {
+    setIsLoading(true);
+    let { data: facts, error } = await supabase
+      .from('facts')
+      .select('*')
+      .order('text', { ascending: false });
+    // console.log(facts);
+    if (!error) {
+      setFacts(facts);
+    }
+    else {
+      alert("There was a problem while getting the data")
+    }
+    setIsLoading(false);
+  }
 
   return (
     <>
@@ -15,10 +38,14 @@ function App() {
         <NewFactForm setFacts={setFacts} setShowForm={setShowForm} /> : null}
       <main>
         <CategoryFilter />
-        <Factslist facts={facts} />
+        {isLoading ? <Loader /> : <Factslist facts={facts} />}
       </main>
     </>
   )
+}
+
+function Loader() {
+  return <p className='loader'>Loading...</p>
 }
 
 function Header({ showForm, setShowForm }) {

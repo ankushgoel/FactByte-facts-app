@@ -40,6 +40,13 @@
     font-weight: bold;
 }
 
+.loader {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 600;
+    margin-top: 24px;
+}
+
 * {
     margin: 0;
     padding: 0;

@@ -42,7 +42,7 @@ function App() {
         <NewFactForm setFacts={setFacts} setShowForm={setShowForm} /> : null}
       <main>
         <CategoryFilter setCurrentCategory={setCurrentCategory} />
-        {isLoading ? <Loader /> : <Factslist facts={facts} currentCategory={currentCategory} />}
+        {isLoading ? <Loader /> : <Factslist facts={facts} setFacts={setFacts} currentCategory={currentCategory} />}
       </main>
     </>
   )
@@ -156,7 +156,7 @@ function CategoryFilter({ setCurrentCategory }) {
   )
 }
 
-function Factslist({ facts, currentCategory }) {
+function Factslist({ facts, setFacts, currentCategory }) {
   // const facts = initialFacts;
   if (facts.length === 0 && currentCategory !== "all") {
     return <p className="message">No facts for this category yet! Maybe You can create the first one.</p>
@@ -165,7 +165,7 @@ function Factslist({ facts, currentCategory }) {
     <section>
       <ul className="facts-list">
         {facts.map((fact) => (
-          <Fact key={fact.id} fact={fact} />
+          <Fact key={fact.id} fact={fact} setFacts={setFacts} />
         ))}
       </ul>
       <p>There are {facts.length} facts in the database</p>
@@ -174,7 +174,22 @@ function Factslist({ facts, currentCategory }) {
 }
 
 function Fact(props) {
-  const { fact } = props;
+  const { fact, setFacts } = props;
+
+  async function handleUpVote() {
+
+    const { data: updatedFact, error } = await supabase
+      .from('facts')
+      .update({ up_votes: fact.up_votes + 1 })
+      .eq('id', fact.id)
+      .select();
+
+    if (!error) {
+      setFacts((facts) => facts.map((f) => f.id == fact.id ? updatedFact[0] : f))
+    }
+
+  }
+
   return (
     <li className="fact">
       <p>{fact.text}
@@ -185,7 +200,7 @@ function Fact(props) {
       </p>
       <span className={`tag ${fact.category}`}>{fact.category}</span>
       <div className="vote-buttons">
-        <button>👍 {fact.up_votes}</button>
+        <button onClick={handleUpVote}>👍 {fact.up_votes}</button>
         <button>🤯 {fact.mindblowing_votes}</button>
         <button>⛔️ {fact.down_votes}</button>
       </div>

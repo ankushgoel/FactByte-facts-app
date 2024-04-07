@@ -82,27 +82,40 @@ function NewFactForm({ setFacts, setShowForm }) {
   const [factText, setFactText] = useState("");
   const [factSource, setFactSource] = useState("");
   const [category, setCategory] = useState("")
+  const [isUploading, setIsUploading] = useState(false)
   const textLength = factText.length;
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     if (factText && isValidHttpUrl(factSource) && category && textLength <= 200) {
-      const newFactObj = {
-        text: factText,
-        source: factSource,
-        category,
-        up_votes: 0,
-        down_votes: 0,
-        mindblowing_votes: 0
-      }
+      // const newFactObj = {
+      //   text: factText,
+      //   source: factSource,
+      //   category,
+      //   up_votes: 0,
+      //   down_votes: 0,
+      //   mindblowing_votes: 0
+      // }
+
+      setIsUploading(true)
+      //Add fact to DB
+      const { data: newFactObj, error } = await supabase
+        .from('facts')
+        .insert([
+          { text: factText, source: factSource, category },
+        ])
+        .select()
+      setIsUploading(false)
       console.log(newFactObj);
+      console.log(error);
 
-      //ToDo - Add fact to DB
-      setFacts((facts) => [newFactObj, ...facts]);
+      if (!error) {
+        setFacts((facts) => [newFactObj[0], ...facts]);
 
-      setFactText("");
-      setFactSource("");
-      setCategory("")
+        setFactText("");
+        setFactSource("");
+        setCategory("")
+      }
       setShowForm(false);
 
     } else {
@@ -123,7 +136,7 @@ function NewFactForm({ setFacts, setShowForm }) {
         <option value="">Choose Category:</option>
         {CATEGORIES.map((cat) => <option key={cat.name} value={cat.name}>{cat.name.toUpperCase()}</option>)}
       </select>
-      <button className="btn font-bold" type="submit">Post</button>
+      <button className="btn font-bold" disabled={isUploading} type="submit">Post</button>
     </form>
   )
 }
@@ -170,7 +183,7 @@ function Fact(props) {
           target="_blank">(Source)</a>
 
       </p>
-      <span className={`tag $.{fact.category}`}>{fact.category}</span>
+      <span className={`tag ${fact.category}`}>{fact.category}</span>
       <div className="vote-buttons">
         <button>👍 {fact.up_votes}</button>
         <button>🤯 {fact.mindblowing_votes}</button>

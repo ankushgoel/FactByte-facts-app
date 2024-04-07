@@ -147,6 +147,12 @@ ul {
 
 }
 
+.disputed {
+    color: red;
+    font-weight: 600;
+    margin-right: 10px;
+}
+
 @media (max-width: 1200px) {
     .fact {
         flex-direction: column;

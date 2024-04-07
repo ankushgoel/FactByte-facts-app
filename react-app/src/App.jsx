@@ -175,19 +175,21 @@ function Factslist({ facts, setFacts, currentCategory }) {
 
 function Fact(props) {
   const { fact, setFacts } = props;
+  const [isUpdating, setIsUpdating] = useState(false)
 
-  async function handleUpVote() {
-
+  async function handleVote(voteAction) {
+    // console.log(voteAction);
+    setIsUpdating(true)
     const { data: updatedFact, error } = await supabase
       .from('facts')
-      .update({ up_votes: fact.up_votes + 1 })
+      .update({ [voteAction]: fact[voteAction] + 1 })
       .eq('id', fact.id)
       .select();
+    setIsUpdating(false);
 
     if (!error) {
       setFacts((facts) => facts.map((f) => f.id == fact.id ? updatedFact[0] : f))
     }
-
   }
 
   return (
@@ -200,9 +202,9 @@ function Fact(props) {
       </p>
       <span className={`tag ${fact.category}`}>{fact.category}</span>
       <div className="vote-buttons">
-        <button onClick={handleUpVote}>👍 {fact.up_votes}</button>
-        <button>🤯 {fact.mindblowing_votes}</button>
-        <button>⛔️ {fact.down_votes}</button>
+        <button onClick={() => handleVote("up_votes")} disabled={isUpdating}>👍 {fact.up_votes}</button>
+        <button onClick={() => handleVote("mindblowing_votes")} disabled={isUpdating}>🤯 {fact.mindblowing_votes}</button>
+        <button onClick={() => handleVote("down_votes")} disabled={isUpdating}>⛔️ {fact.down_votes}</button>
       </div>
     </li>
   )

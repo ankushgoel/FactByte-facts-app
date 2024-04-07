@@ -57,7 +57,7 @@ body {
     background-color: #292524;
     color: #fafaf9;
     font-family: "Sono", sans-serif;
-    padding: 40px 60px;
+    padding: 40px 60px 0;
 }
 
 .container {
@@ -109,12 +109,13 @@ form input:first-child {
 main {
     display: grid;
     grid-template-columns: 220px 1fr;
-    gap: 40px
+    gap: 40px;
+    height: calc(100vh - 40px - 54px - 40px - 2rem)
 }
 
 @media (max-width: 991px) {
-    .body {
-        padding: 32px 48px;
+    body {
+        padding: 20px 20px 0;
     }
 
     form {
@@ -126,6 +127,15 @@ main {
     main {
         grid-template-columns: 1fr;
     }
+
+    .logo img {
+        width: 175px;
+    }
+}
+
+section {
+    overflow: scroll;
+    padding-bottom: 40px;
 }
 
 ul {

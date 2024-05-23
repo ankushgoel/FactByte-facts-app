@@ -1,8 +1,10 @@
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react'
 import supabase from './supabase'
+import Spinner from './components/Spinner'
 
 import logo from '/logo.png'
-import { initialFacts, CATEGORIES } from './data'
+import { CATEGORIES } from './data'
 import './App.css'
 import './style.css'
 
@@ -42,14 +44,18 @@ function App() {
         <NewFactForm setFacts={setFacts} setShowForm={setShowForm} /> : null}
       <main>
         <CategoryFilter setCurrentCategory={setCurrentCategory} />
-        {isLoading ? <Loader /> : <Factslist facts={facts} setFacts={setFacts} currentCategory={currentCategory} />}
+        {isLoading ? <Loader isLoading={isLoading} /> : <Factslist facts={facts} setFacts={setFacts} currentCategory={currentCategory} />}
       </main>
     </>
   )
 }
 
-function Loader() {
-  return <p className='loader'>Loading...</p>
+function Loader({ isLoading }) {
+  return <div>
+    <Spinner loading={isLoading} />
+    <p className='loader'>Loading...</p>
+  </div>
+
 }
 
 function Header({ showForm, setShowForm }) {

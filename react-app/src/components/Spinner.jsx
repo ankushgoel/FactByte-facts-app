@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import ClipLoader from "react-spinners/ClipLoader";
 
 const override = {

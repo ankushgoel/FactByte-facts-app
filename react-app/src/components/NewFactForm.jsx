@@ -12,35 +12,35 @@ const NewFactForm = ({ setFacts, setShowForm }) => {
     async function handleSubmit(e) {
         e.preventDefault();
         if (factText && isValidHttpUrl(factSource) && category && textLength <= 200) {
-            // const newFactObj = {
-            //   text: factText,
-            //   source: factSource,
-            //   category,
-            //   up_votes: 0,
-            //   down_votes: 0,
-            //   mindblowing_votes: 0
-            // }
-
             setIsUploading(true)
             //Add fact to DB
-            const { data: newFactObj, error } = await supabase
-                .from('facts')
-                .insert([
-                    { text: factText, source: factSource, category },
-                ])
-                .select()
-            setIsUploading(false)
-            console.log(newFactObj);
-            console.log(error);
+            try {
+                const { data: newFactObj, status, error } = await supabase
+                    .from('facts')
+                    .insert([
+                        { text: factText, source: factSource, category },
+                    ])
+                    .select()
+                // console.log(newFactObj);
 
-            if (!error) {
-                setFacts((facts) => [newFactObj[0], ...facts]);
+                if (!error && status == 200) {
+                    setFacts((facts) => [newFactObj[0], ...facts]);
 
-                setFactText("");
-                setFactSource("");
-                setCategory("")
+                    setFactText("");
+                    setFactSource("");
+                    setCategory("")
+
+                    setShowForm(false);
+                } else {
+                    throw error;
+                }
+            } catch (error) {
+                // ToDo show error msg via react toastify
+                console.log('Error while adding fact', error?.message);
+                alert('Error while adding fact ' + error?.message);
+            } finally {
+                setIsUploading(false);
             }
-            setShowForm(false);
 
         } else {
             alert("Please add valid data before posting!")

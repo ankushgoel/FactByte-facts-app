@@ -18,27 +18,31 @@ function App() {
   const [currentCategory, setCurrentCategory] = useState("all")
 
   useEffect(() => {
-    async function getFacts() {
+    const getFacts = async () => {
       setIsLoading(true);
-      let query = supabase.from('facts').select('*')
-      if (currentCategory !== "all") {
-        query = query.eq("category", currentCategory)
+      try {
+        let query = supabase.from('facts').select('*')
+        if (currentCategory !== "all") {
+          query = query.eq("category", currentCategory)
+        }
+        let { data: facts, status, error } = await query
+          .order('text', { ascending: false })
+          .limit(1000);
+        // console.log(facts);
+        if (!error && status == 200) {
+          setFacts(facts);
+        } else {
+          throw error;
+        }
+      } catch (error) {
+        console.log('There was a problem while getting the data', error?.message);
+      } finally {
+        setIsLoading(false);
       }
-      let { data: facts, error } = await query
-        .order('text', { ascending: false })
-        .limit(1000);
-      // console.log(facts);
-      if (!error) {
-        setFacts(facts);
-      }
-      else {
-        alert("There was a problem while getting the data")
-      }
-      setIsLoading(false);
     }
 
     getFacts()
-    console.log('getfacts useeffect');
+    // console.log('getfacts useeffect');
   }, [currentCategory])
 
   return (

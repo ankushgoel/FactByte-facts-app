@@ -8,17 +8,24 @@ const Fact = (props) => {
     const isDisputed = fact.up_votes + fact.mindblowing_votes < fact.down_votes
 
     const handleVote = async (voteAction) => {
-        // console.log(voteAction);
         setIsUpdating(true)
-        const { data: updatedFact, error } = await supabase
-            .from('facts')
-            .update({ [voteAction]: fact[voteAction] + 1 })
-            .eq('id', fact.id)
-            .select();
-        setIsUpdating(false);
-
-        if (!error) {
-            setFacts((facts) => facts.map((f) => f.id == fact.id ? updatedFact[0] : f))
+        try {
+            // console.log(voteAction);
+            const { data: updatedFact, status, error } = await supabase
+                .from('facts')
+                .update({ [voteAction]: fact[voteAction] + 1 })
+                .eq('id', fact.id)
+                .select();
+            if (!error && status == 200) {
+                setFacts((facts) => facts.map((f) => f.id == fact.id ? updatedFact[0] : f))
+            } else {
+                throw error;
+            }
+        } catch (error) {
+            // ToDo show error msg via react toastify
+            console.log('Error while updating votes', error);
+        } finally {
+            setIsUpdating(false);
         }
     }
 

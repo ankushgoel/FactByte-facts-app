@@ -23,7 +23,7 @@ const NewFactForm = ({ setFacts, setShowForm }) => {
                     .select()
                 // console.log(newFactObj);
 
-                if (!error && status == 200) {
+                if (!error && status == 201) {
                     setFacts((facts) => [newFactObj[0], ...facts]);
 
                     setFactText("");

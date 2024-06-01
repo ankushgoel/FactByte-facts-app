@@ -6,6 +6,7 @@ import NewFactForm from './components/NewFactForm'
 import Factslist from './components/Factslist'
 
 import Spinner from './components/Spinner'
+import { toast } from 'react-toastify';
 
 import { CATEGORIES } from './data'
 import './App.css'
@@ -36,6 +37,7 @@ function App() {
         }
       } catch (error) {
         console.log('There was a problem while getting the data', error?.message);
+        toast.warn('There was a problem while getting the data', error?.message);
       } finally {
         setIsLoading(false);
       }

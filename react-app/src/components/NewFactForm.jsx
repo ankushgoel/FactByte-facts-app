@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { CATEGORIES } from '../data'
 import supabase from '../supabase'
+import { toast } from 'react-toastify';
 
 const NewFactForm = ({ setFacts, setShowForm }) => {
     const [factText, setFactText] = useState("");
@@ -31,19 +32,20 @@ const NewFactForm = ({ setFacts, setShowForm }) => {
                     setCategory("")
 
                     setShowForm(false);
+                    toast.success('New Fact Added Successfully!')
                 } else {
                     throw error;
                 }
             } catch (error) {
-                // ToDo show error msg via react toastify
-                console.log('Error while adding fact', error?.message);
-                alert('Error while adding fact ' + error?.message);
+                // console.log('Error while adding fact', error?.message);
+                // alert('Error while adding fact ' + error?.message);
+                toast.error('Error while adding fact ' + error?.message)
             } finally {
                 setIsUploading(false);
             }
 
         } else {
-            alert("Please add valid data before posting!")
+            toast.warn("Please add valid data before posting!")
         }
     }
 
